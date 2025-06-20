@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { BlurState, MousePosition, STORAGE_KEYS, RADIUS_SIZES, BLUR_INTENSITIES, RadiusSize, BlurIntensity, FakeAppType, FAKE_APP_TYPES } from '../types';
+import { BlurState, MousePosition, BLUR_STORAGE_KEYS, RADIUS_SIZES, BLUR_INTENSITIES, RadiusSize, BlurIntensity, FakeAppType, FAKE_APP_TYPES } from '../types';
 
 interface ExtendedBlurState extends BlurState {
     fakeAppType: FakeAppType;
@@ -26,18 +26,18 @@ const BlurOverlay: React.FC = () => {
             try {
                 if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync) {
                     const result = await chrome.storage.sync.get([
-                        STORAGE_KEYS.BLUR_ENABLED,
-                        STORAGE_KEYS.CLEAR_RADIUS,
-                        STORAGE_KEYS.BLUR_INTENSITY,
-                        STORAGE_KEYS.FAKE_APP_TYPE
+                        BLUR_STORAGE_KEYS.BLUR_ENABLED,
+                        BLUR_STORAGE_KEYS.CLEAR_RADIUS,
+                        BLUR_STORAGE_KEYS.BLUR_INTENSITY,
+                        BLUR_STORAGE_KEYS.FAKE_APP_TYPE
                     ]);
 
                     setBlurState(prev => ({
                         ...prev,
-                        isActive: result[STORAGE_KEYS.BLUR_ENABLED] !== undefined ? result[STORAGE_KEYS.BLUR_ENABLED] : true,
-                        clearRadius: result[STORAGE_KEYS.CLEAR_RADIUS] || 100,
-                        blurIntensity: result[STORAGE_KEYS.BLUR_INTENSITY] || 8,
-                        fakeAppType: result[STORAGE_KEYS.FAKE_APP_TYPE] || 'none'
+                        isActive: result[BLUR_STORAGE_KEYS.BLUR_ENABLED] !== undefined ? result[BLUR_STORAGE_KEYS.BLUR_ENABLED] : true,
+                        clearRadius: result[BLUR_STORAGE_KEYS.CLEAR_RADIUS] || 100,
+                        blurIntensity: result[BLUR_STORAGE_KEYS.BLUR_INTENSITY] || 8,
+                        fakeAppType: result[BLUR_STORAGE_KEYS.FAKE_APP_TYPE] || 'none'
                     }));
                 }
             } catch (error) {
@@ -55,13 +55,13 @@ const BlurOverlay: React.FC = () => {
         try {
             if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync) {
                 const dataToSave: any = {
-                    [STORAGE_KEYS.BLUR_ENABLED]: isActive,
-                    [STORAGE_KEYS.CLEAR_RADIUS]: radius,
-                    [STORAGE_KEYS.BLUR_INTENSITY]: intensity
+                    [BLUR_STORAGE_KEYS.BLUR_ENABLED]: isActive,
+                    [BLUR_STORAGE_KEYS.CLEAR_RADIUS]: radius,
+                    [BLUR_STORAGE_KEYS.BLUR_INTENSITY]: intensity
                 };
 
                 if (fakeAppType !== undefined) {
-                    dataToSave[STORAGE_KEYS.FAKE_APP_TYPE] = fakeAppType;
+                    dataToSave[BLUR_STORAGE_KEYS.FAKE_APP_TYPE] = fakeAppType;
                 }
 
                 await chrome.storage.sync.set(dataToSave);
@@ -77,20 +77,20 @@ const BlurOverlay: React.FC = () => {
             let shouldUpdate = false;
             const updates: Partial<ExtendedBlurState> = {};
 
-            if (changes[STORAGE_KEYS.BLUR_ENABLED]) {
-                updates.isActive = changes[STORAGE_KEYS.BLUR_ENABLED].newValue;
+            if (changes[BLUR_STORAGE_KEYS.BLUR_ENABLED]) {
+                updates.isActive = changes[BLUR_STORAGE_KEYS.BLUR_ENABLED].newValue;
                 shouldUpdate = true;
             }
-            if (changes[STORAGE_KEYS.CLEAR_RADIUS]) {
-                updates.clearRadius = changes[STORAGE_KEYS.CLEAR_RADIUS].newValue;
+            if (changes[BLUR_STORAGE_KEYS.CLEAR_RADIUS]) {
+                updates.clearRadius = changes[BLUR_STORAGE_KEYS.CLEAR_RADIUS].newValue;
                 shouldUpdate = true;
             }
-            if (changes[STORAGE_KEYS.BLUR_INTENSITY]) {
-                updates.blurIntensity = changes[STORAGE_KEYS.BLUR_INTENSITY].newValue;
+            if (changes[BLUR_STORAGE_KEYS.BLUR_INTENSITY]) {
+                updates.blurIntensity = changes[BLUR_STORAGE_KEYS.BLUR_INTENSITY].newValue;
                 shouldUpdate = true;
             }
-            if (changes[STORAGE_KEYS.FAKE_APP_TYPE]) {
-                updates.fakeAppType = changes[STORAGE_KEYS.FAKE_APP_TYPE].newValue;
+            if (changes[BLUR_STORAGE_KEYS.FAKE_APP_TYPE]) {
+                updates.fakeAppType = changes[BLUR_STORAGE_KEYS.FAKE_APP_TYPE].newValue;
                 shouldUpdate = true;
             }
 
@@ -630,27 +630,7 @@ const BlurOverlay: React.FC = () => {
     }
 
     if (!blurState.isActive) {
-        return (
-            <div
-                style={{
-                    position: 'fixed',
-                    top: '20px',
-                    right: '20px',
-                    background: 'rgba(0, 0, 0, 0.7)',
-                    color: 'white',
-                    padding: '8px 12px',
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    fontFamily: 'Arial, sans-serif',
-                    zIndex: 1000000,
-                    backdropFilter: 'blur(10px)',
-                    opacity: 0.6
-                }}
-            >
-                <div>Blur: <strong>OFF</strong></div>
-                <div><strong>Ctrl+Shift+Q</strong> to enable</div>
-            </div>
-        );
+        return null;
     }
 
     const maskStyle = blurState.isCtrlPressed ? {
@@ -714,35 +694,6 @@ const BlurOverlay: React.FC = () => {
                     }}
                 />
             )}
-
-            {/* Instructions overlay */}
-            <div
-                style={{
-                    position: 'fixed',
-                    top: '20px',
-                    right: '20px',
-                    background: 'rgba(0, 0, 0, 0.8)',
-                    color: 'white',
-                    padding: '10px 15px',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontFamily: 'Arial, sans-serif',
-                    zIndex: 1000002,
-                    backdropFilter: 'blur(10px)'
-                }}
-            >
-                <div>Hold <strong>Ctrl</strong> to see through</div>
-                <div><strong>Ctrl+Shift+Q</strong> to toggle blur</div>
-                <div><strong>Ctrl+Alt+P</strong> to change clear size</div>
-                <div><strong>Ctrl+Alt+B</strong> to change blur intensity</div>
-                <div><strong>Ctrl+Alt+F</strong> to change fake app</div>
-                <div style={{ marginTop: '5px', fontSize: '12px', opacity: 0.8 }}>
-                    Size: <strong>{blurState.clearRadius}px</strong> | Blur: <strong>{blurState.blurIntensity}px</strong>
-                </div>
-                <div style={{ fontSize: '12px', opacity: 0.8 }}>
-                    App: <strong>{getFakeAppName(blurState.fakeAppType)}</strong>
-                </div>
-            </div>
 
             {/* Radius change notification */}
             {showRadiusChange && (

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Blur Extension</title>
+    <style>
+        body {
+            width: 320px;
+            min-height: 400px;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .header {
+            padding: 20px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #FFE4B5;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+        }
+
+        .shortcut {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .shortcut:last-child {
+            border-bottom: none;
+        }
+
+        .shortcut-desc {
+            font-size: 13px;
+            flex: 1;
+        }
+
+        .shortcut-key {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'Consolas', monospace;
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+
+        .status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .status-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .status-label {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-bottom: 2px;
+        }
+
+        .status-value {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .toggle-button {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .toggle-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .toggle-button.active {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: rgba(76, 175, 80, 0.5);
+        }
+
+        .footer {
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 11px;
+            opacity: 0.6;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>🔒 Screen Blur Extension</h1>
+    <p>Privacy protection with Ctrl preview</p>
+</div>
+
+<div class="content">
+    <div class="status">
+        <div class="status-item">
+            <div class="status-label">BLUR STATUS</div>
+            <div class="status-value" id="blur-status">Loading...</div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">CLEAR SIZE</div>
+            <div class="status-value" id="clear-size">Loading...</div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">INTENSITY</div>
+            <div class="status-value" id="blur-intensity">Loading...</div>
+        </div>
+    </div>
+
+    <div class="status">
+        <div class="status-item">
+            <div class="status-label">FAKE APP</div>
+            <div class="status-value" id="fake-app">Loading...</div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">TITLE CHANGER</div>
+            <div class="status-value" id="title-status">Loading...</div>
+        </div>
+    </div>
+
+    <button class="toggle-button" id="toggle-blur">
+        Toggle Blur
+    </button>
+
+    <div class="section">
+        <h3>🎮 Blur Controls</h3>
+        <div class="shortcut">
+            <span class="shortcut-desc">Toggle blur on/off</span>
+            <code class="shortcut-key">Ctrl+Shift+Q</code>
+        </div>
+        <div class="shortcut">
+            <span class="shortcut-desc">See through (hold)</span>
+            <code class="shortcut-key">Ctrl</code>
+        </div>
+        <div class="shortcut">
+            <span class="shortcut-desc">Change clear area size</span>
+            <code class="shortcut-key">Ctrl+Alt+P</code>
+        </div>
+        <div class="shortcut">
+            <span class="shortcut-desc">Change blur intensity</span>
+            <code class="shortcut-key">Ctrl+Alt+B</code>
+        </div>
+        <div class="shortcut">
+            <span class="shortcut-desc">Change fake app overlay</span>
+            <code class="shortcut-key">Ctrl+Alt+F</code>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>📝 Title Controls</h3>
+        <div class="shortcut">
+            <span class="shortcut-desc">Toggle title changer</span>
+            <code class="shortcut-key">Ctrl+Shift+F</code>
+        </div>
+        <div class="shortcut">
+            <span class="shortcut-desc">Edit tab title</span>
+            <code class="shortcut-key">Ctrl+Alt+T</code>
+        </div>
+        <div class="shortcut">
+            <span class="shortcut-desc">Restore original title</span>
+            <code class="shortcut-key">Ctrl+Alt+R</code>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    Settings are synced across tabs
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>

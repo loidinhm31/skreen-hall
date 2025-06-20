@@ -15,6 +15,7 @@
     }
   ],
   "action": {
-    "default_title": "Screen Blur Extension"
+    "default_title": "Screen Blur Extension",
+    "default_popup": "popup.html"
   }
 }

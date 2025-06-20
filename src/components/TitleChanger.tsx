@@ -221,7 +221,7 @@ const TitleChanger: React.FC = () => {
             return;
         }
 
-        // Toggle title changer with Ctrl+Shift+T
+        // Toggle title changer with Ctrl+Shift+F
         if (e.ctrlKey && e.shiftKey && e.code === 'KeyF') {
             e.preventDefault();
             toggleTitleChanger();
@@ -254,39 +254,6 @@ const TitleChanger: React.FC = () => {
 
     return (
         <>
-            {/* Status indicator */}
-            <div
-                style={{
-                    position: 'fixed',
-                    top: '20px',
-                    left: '20px',
-                    background: titleState.isEnabled ? 'rgba(76, 175, 80, 0.8)' : 'rgba(158, 158, 158, 0.8)',
-                    color: 'white',
-                    padding: '8px 12px',
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    fontFamily: 'Arial, sans-serif',
-                    zIndex: 1000000,
-                    backdropFilter: 'blur(10px)',
-                    opacity: 0.7,
-                    transition: 'all 0.3s ease'
-                }}
-            >
-                <div>Title Changer: <strong>{titleState.isEnabled ? 'ON' : 'OFF'}</strong></div>
-                <div><strong>Ctrl+Shift+F</strong> to toggle</div>
-                {titleState.isEnabled && (
-                    <>
-                        <div><strong>Ctrl+Alt+T</strong> to edit title</div>
-                        <div><strong>Ctrl+Alt+R</strong> to restore</div>
-                        {titleState.customTitle && (
-                            <div style={{ marginTop: '3px', fontSize: '10px', color: '#E8F5E8' }}>
-                                Custom title active
-                            </div>
-                        )}
-                    </>
-                )}
-            </div>
-
             {/* Title edit input */}
             {titleState.titleEditMode && titleState.isEnabled && (
                 <div
