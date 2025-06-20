@@ -5,7 +5,7 @@ export interface MousePosition {
 
 export interface BlurState {
     isActive: boolean;
-    isCtrlPressed: boolean;
+    isCtrlPressed: boolean; // Keeping for backward compatibility
     mousePosition: MousePosition;
     clearRadius: number;
     blurIntensity: number;
