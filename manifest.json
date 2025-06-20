@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Screen Blur with Ctrl Preview",
+  "version": "1.0.0",
+  "description": "Blur screen content with Ctrl+mouse preview functionality",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_title": "Screen Blur Extension"
+  }
+}
