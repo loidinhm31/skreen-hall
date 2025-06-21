@@ -1,21 +1,11 @@
 import React, { useCallback, useRef } from 'react';
 
-import { useVideoPlayer } from '../../hook/useKeyboardShortcuts';
 import { VideoFile } from '../../types/video-player-types';
+import { useVideoPlayer } from '../../hook/useVideoPlayer';
 
 const FileControls: React.FC = () => {
   const { setVideos, setError, setIsLoading } = useVideoPlayer();
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const supportedFormats = [
-    'video/mp4',
-    'video/webm',
-    'video/ogg',
-    'video/quicktime',
-    'video/x-msvideo',
-    'video/x-matroska',
-  ];
-
   const isVideoFile = (file: File): boolean => {
     return file.type.startsWith('video/') || hasVideoExtension(file.name);
   };
@@ -37,12 +27,15 @@ const FileControls: React.FC = () => {
     return videoExtensions.includes(extension);
   };
 
+  // UPDATED: Add originalName and isRenamed fields
   const createVideoFile = (file: File): VideoFile => ({
     file,
     url: URL.createObjectURL(file),
     name: file.name,
+    originalName: file.name, // Store original name
     size: file.size,
     id: `${file.name}-${file.size}-${file.lastModified}`,
+    isRenamed: false, // Initially false
   });
 
   const handleFileSelection = useCallback(
@@ -213,19 +206,32 @@ const FileControls: React.FC = () => {
         </button>
       </div>
 
+      {/* UPDATED: Enhanced info section */}
       <div
         style={{
           marginTop: '15px',
-          padding: '10px',
+          padding: '12px',
           background: 'rgba(255, 255, 255, 0.05)',
           borderRadius: '6px',
           fontSize: '12px',
-          opacity: 0.8,
+          opacity: 0.9,
         }}
       >
-        <strong>Supported formats:</strong> MP4, WebM, OGG, MOV, AVI, MKV
-        <br />
-        <strong>Note:</strong> Some formats may require additional codecs
+        <div style={{ marginBottom: '6px' }}>
+          <strong>✅ Supported formats:</strong> MP4, WebM, OGG, MOV, AVI, MKV
+        </div>
+        <div style={{ marginBottom: '6px' }}>
+          <strong>🏷️ File operations:</strong> Click-to-select, rename,
+          auto-save
+        </div>
+        <div style={{ marginBottom: '6px' }}>
+          <strong>💾 Save method:</strong> Directory access (Chrome 86+) or
+          auto-download
+        </div>
+        <div style={{ color: '#FFD700' }}>
+          <strong>💡 Tip:</strong> First save will ask for folder permission -
+          grant it for seamless saving!
+        </div>
       </div>
     </div>
   );

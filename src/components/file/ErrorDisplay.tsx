@@ -1,6 +1,6 @@
 import React from 'react';
+import { useVideoPlayer } from '../../hook/useVideoPlayer';
 
-import { useVideoPlayer } from '../../hook/useKeyboardShortcuts';
 
 const ErrorDisplay: React.FC = () => {
   const { error, setError } = useVideoPlayer();

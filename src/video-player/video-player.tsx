@@ -5,13 +5,11 @@ import BlurOverlay from '../components/BlurOverlay';
 import ErrorDisplay from '../components/file/ErrorDisplay';
 import FileControls from '../components/file/FileControl';
 import ShortcutsInfo from '../components/file/ShortcutInfo';
-import {
-  VideoPlayer,
-  VideoPlayerHeader,
-  VideoPlaylist,
-} from '../components/file/VideoPlayer';
 import { useKeyboardShortcuts } from '../hook/useKeyboardShortcuts';
-import VideoPlayerProvider from '../provider/VideoPlayerProvider';
+import VideoPlayerProvider from './provider/VideoPlayerProvider';
+import VideoPlayerHeader from '../components/file/VideoPlayerHeader';
+import VideoPlaylist from '../components/file/VideoPlayerList';
+import VideoPlayer from '../components/file/VideoPlayer';
 
 const KeyboardShortcutsHandler: React.FC = () => {
   useKeyboardShortcuts();

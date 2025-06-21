@@ -1,46 +1,6 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { useEffect } from 'react';
 
-import { VideoFile } from '../types/video-player-types';
-
-interface VideoPlayerContextType {
-  videos: VideoFile[];
-  currentVideoIndex: number;
-  isPlaying: boolean;
-  volume: number;
-  playbackRate: number;
-  isFullscreen: boolean;
-  isLoading: boolean;
-  error: string | null;
-  setVideos: (videos: VideoFile[]) => void;
-  setCurrentVideoIndex: (index: number) => void;
-  setIsPlaying: (playing: boolean) => void;
-  setVolume: (volume: number) => void;
-  setPlaybackRate: (rate: number) => void;
-  setIsFullscreen: (fullscreen: boolean) => void;
-  setIsLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
-  playNext: () => void;
-  playPrevious: () => void;
-}
-
-// Context
-export const VideoPlayerContext = createContext<VideoPlayerContextType | null>(
-  null
-);
-
-export const useVideoPlayer = () => {
-  const context = useContext(VideoPlayerContext);
-  if (!context) {
-    throw new Error('useVideoPlayer must be used within a VideoPlayerProvider');
-  }
-  return context;
-};
+import { useVideoPlayer } from './useVideoPlayer';
 
 export const useKeyboardShortcuts = () => {
   const { playNext, playPrevious, videos, currentVideoIndex } =
