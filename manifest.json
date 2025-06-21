@@ -1,11 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "Screen Blur with Ctrl Preview",
-  "version": "1.0.0",
-  "description": "Blur screen content with Ctrl+mouse preview functionality",
+  "name": "Screen Extensions - Blur & Video Player",
+  "version": "1.1.0",
+  "description": "Privacy protection with blur controls, title changer, and local video player",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "content_scripts": [
     {
@@ -15,7 +16,19 @@
     }
   ],
   "action": {
-    "default_title": "Screen Blur Extension",
+    "default_title": "Screen Extensions",
     "default_popup": "popup.html"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "video-player.html",
+        "video-player.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "host_permissions": [
+    "file://*/*"
+  ]
 }

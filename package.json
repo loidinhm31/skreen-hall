@@ -1,10 +1,12 @@
 {
   "name": "screen-blur-extension",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Chrome extension for screen blur with Ctrl preview",
   "scripts": {
     "build": "webpack --mode=production",
-    "dev": "webpack --mode=development --watch"
+    "dev": "webpack --mode=development --watch",
+    "clean": "rm -rf dist",
+    "fix:format": "prettier --write ./src"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -20,6 +22,7 @@
     "ts-loader": "^9.4.4",
     "typescript": "^5.1.6",
     "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "prettier": "3.5.3"
   }
 }
