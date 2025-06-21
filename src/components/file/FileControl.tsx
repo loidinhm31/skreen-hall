@@ -1,27 +1,39 @@
-import React, { useCallback, useRef } from "react";
-import { VideoFile } from "../../types/video-player-types";
-import { useVideoPlayer } from "../../hook/useKeyboardShortcuts";
+import React, { useCallback, useRef } from 'react';
+
+import { useVideoPlayer } from '../../hook/useKeyboardShortcuts';
+import { VideoFile } from '../../types/video-player-types';
 
 const FileControls: React.FC = () => {
   const { setVideos, setError, setIsLoading } = useVideoPlayer();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const supportedFormats = [
-    "video/mp4",
-    "video/webm",
-    "video/ogg",
-    "video/quicktime",
-    "video/x-msvideo",
-    "video/x-matroska",
+    'video/mp4',
+    'video/webm',
+    'video/ogg',
+    'video/quicktime',
+    'video/x-msvideo',
+    'video/x-matroska',
   ];
 
   const isVideoFile = (file: File): boolean => {
-    return file.type.startsWith("video/") || hasVideoExtension(file.name);
+    return file.type.startsWith('video/') || hasVideoExtension(file.name);
   };
 
   const hasVideoExtension = (filename: string): boolean => {
-    const videoExtensions = [".mp4", ".webm", ".ogg", ".mov", ".avi", ".mkv", ".m4v", ".3gp"];
-    const extension = filename.toLowerCase().substring(filename.lastIndexOf("."));
+    const videoExtensions = [
+      '.mp4',
+      '.webm',
+      '.ogg',
+      '.mov',
+      '.avi',
+      '.mkv',
+      '.m4v',
+      '.3gp',
+    ];
+    const extension = filename
+      .toLowerCase()
+      .substring(filename.lastIndexOf('.'));
     return videoExtensions.includes(extension);
   };
 
@@ -40,7 +52,9 @@ const FileControls: React.FC = () => {
       const videoFiles = Array.from(fileList).filter(isVideoFile);
 
       if (videoFiles.length === 0) {
-        setError("No valid video files selected. Please select video files (MP4, WebM, OGG, MOV, AVI, MKV).");
+        setError(
+          'No valid video files selected. Please select video files (MP4, WebM, OGG, MOV, AVI, MKV).'
+        );
         return;
       }
 
@@ -48,12 +62,14 @@ const FileControls: React.FC = () => {
       const videos = videoFiles.map(createVideoFile);
       setVideos(videos);
     },
-    [setVideos, setError],
+    [setVideos, setError]
   );
 
   const handleFolderSelection = useCallback(async () => {
-    if (!("showDirectoryPicker" in window)) {
-      setError("Folder access is not supported in this browser. Please use Chrome 86+ or select individual files.");
+    if (!('showDirectoryPicker' in window)) {
+      setError(
+        'Folder access is not supported in this browser. Please use Chrome 86+ or select individual files.'
+      );
       return;
     }
 
@@ -63,7 +79,7 @@ const FileControls: React.FC = () => {
       const files: File[] = [];
 
       for await (const entry of directoryHandle.values()) {
-        if (entry.kind === "file") {
+        if (entry.kind === 'file') {
           const file = await entry.getFile();
           if (isVideoFile(file)) {
             files.push(file);
@@ -72,7 +88,7 @@ const FileControls: React.FC = () => {
       }
 
       if (files.length === 0) {
-        setError("No video files found in the selected folder.");
+        setError('No video files found in the selected folder.');
         return;
       }
 
@@ -81,7 +97,7 @@ const FileControls: React.FC = () => {
       setVideos(videos);
       setError(null);
     } catch (error: any) {
-      if (error.name !== "AbortError") {
+      if (error.name !== 'AbortError') {
         setError(`Error accessing folder: ${error.message}`);
       }
     } finally {
@@ -94,72 +110,72 @@ const FileControls: React.FC = () => {
       e.preventDefault();
       handleFileSelection(e.dataTransfer.files);
     },
-    [handleFileSelection],
+    [handleFileSelection]
   );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = "copy";
+    e.dataTransfer.dropEffect = 'copy';
   }, []);
 
   return (
     <div
       style={{
-        background: "rgba(0, 0, 0, 0.2)",
-        padding: "25px",
-        borderRadius: "12px",
-        margin: "30px",
-        backdropFilter: "blur(10px)",
-        border: "1px solid rgba(255, 255, 255, 0.1)",
+        background: 'rgba(0, 0, 0, 0.2)',
+        padding: '25px',
+        borderRadius: '12px',
+        margin: '30px',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
       }}
     >
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "15px",
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '15px',
         }}
       >
         <div
           style={{
-            position: "relative",
-            display: "inline-block",
-            width: "100%",
+            position: 'relative',
+            display: 'inline-block',
+            width: '100%',
           }}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
         >
           <input
             ref={fileInputRef}
-            type="file"
+            type='file'
             multiple
-            accept="video/*"
+            accept='video/*'
             onChange={(e) => handleFileSelection(e.target.files)}
             style={{
-              position: "absolute",
+              position: 'absolute',
               opacity: 0,
-              width: "100%",
-              height: "100%",
-              cursor: "pointer",
+              width: '100%',
+              height: '100%',
+              cursor: 'pointer',
             }}
           />
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "10px",
-              padding: "15px 25px",
-              background: "linear-gradient(45deg, #667eea, #764ba2)",
-              border: "2px dashed rgba(255, 255, 255, 0.3)",
-              borderRadius: "8px",
-              color: "white",
-              fontSize: "16px",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "all 0.3s ease",
-              textAlign: "center",
-              minHeight: "60px",
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              padding: '15px 25px',
+              background: 'linear-gradient(45deg, #667eea, #764ba2)',
+              border: '2px dashed rgba(255, 255, 255, 0.3)',
+              borderRadius: '8px',
+              color: 'white',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              textAlign: 'center',
+              minHeight: '60px',
             }}
           >
             <span>📁</span>
@@ -169,37 +185,41 @@ const FileControls: React.FC = () => {
 
         <button
           onClick={handleFolderSelection}
-          disabled={!("showDirectoryPicker" in window)}
+          disabled={!('showDirectoryPicker' in window)}
           style={{
-            padding: "15px 25px",
+            padding: '15px 25px',
             background:
-              "showDirectoryPicker" in window ? "linear-gradient(45deg, #4CAF50, #45a049)" : "rgba(128, 128, 128, 0.5)",
-            border: "none",
-            borderRadius: "8px",
-            color: "white",
-            fontSize: "16px",
-            fontWeight: "600",
-            cursor: "showDirectoryPicker" in window ? "pointer" : "not-allowed",
-            transition: "all 0.3s ease",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "10px",
-            opacity: "showDirectoryPicker" in window ? 1 : 0.5,
+              'showDirectoryPicker' in window
+                ? 'linear-gradient(45deg, #4CAF50, #45a049)'
+                : 'rgba(128, 128, 128, 0.5)',
+            border: 'none',
+            borderRadius: '8px',
+            color: 'white',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'showDirectoryPicker' in window ? 'pointer' : 'not-allowed',
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+            opacity: 'showDirectoryPicker' in window ? 1 : 0.5,
           }}
         >
           <span>📂</span>
-          <span>Open Folder {!("showDirectoryPicker" in window) && "(Chrome 86+)"}</span>
+          <span>
+            Open Folder {!('showDirectoryPicker' in window) && '(Chrome 86+)'}
+          </span>
         </button>
       </div>
 
       <div
         style={{
-          marginTop: "15px",
-          padding: "10px",
-          background: "rgba(255, 255, 255, 0.05)",
-          borderRadius: "6px",
-          fontSize: "12px",
+          marginTop: '15px',
+          padding: '10px',
+          background: 'rgba(255, 255, 255, 0.05)',
+          borderRadius: '6px',
+          fontSize: '12px',
           opacity: 0.8,
         }}
       >

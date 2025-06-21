@@ -1,8 +1,11 @@
-import React, { useCallback, useState } from "react";
-import { VideoFile, VideoPlayerContextType } from "../types/video-player-types";
-import { VideoPlayerContext } from "../hook/useKeyboardShortcuts";
+import React, { useCallback, useState } from 'react';
 
-const VideoPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+import { VideoPlayerContext } from '../hook/useKeyboardShortcuts';
+import { VideoFile, VideoPlayerContextType } from '../types/video-player-types';
+
+const VideoPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [videos, setVideos] = useState<VideoFile[]>([]);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -45,7 +48,11 @@ const VideoPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children
     playPrevious,
   };
 
-  return <VideoPlayerContext.Provider value={value}>{children}</VideoPlayerContext.Provider>;
+  return (
+    <VideoPlayerContext.Provider value={value}>
+      {children}
+    </VideoPlayerContext.Provider>
+  );
 };
 
 export default VideoPlayerProvider;

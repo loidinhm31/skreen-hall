@@ -1,5 +1,12 @@
-import React, { useCallback, useContext, useEffect, useState, createContext } from "react";
-import { VideoFile } from "../types/video-player-types";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import { VideoFile } from '../types/video-player-types';
 
 interface VideoPlayerContextType {
   videos: VideoFile[];
@@ -23,35 +30,38 @@ interface VideoPlayerContextType {
 }
 
 // Context
-export const VideoPlayerContext = createContext<VideoPlayerContextType | null>(null);
+export const VideoPlayerContext = createContext<VideoPlayerContextType | null>(
+  null
+);
 
 export const useVideoPlayer = () => {
   const context = useContext(VideoPlayerContext);
   if (!context) {
-    throw new Error("useVideoPlayer must be used within a VideoPlayerProvider");
+    throw new Error('useVideoPlayer must be used within a VideoPlayerProvider');
   }
   return context;
 };
 
 export const useKeyboardShortcuts = () => {
-  const { playNext, playPrevious, videos, currentVideoIndex } = useVideoPlayer();
+  const { playNext, playPrevious, videos, currentVideoIndex } =
+    useVideoPlayer();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Skip if user is typing in an input
       if (
-        (e.target && (e.target as HTMLElement).tagName === "INPUT") ||
-        (e.target as HTMLElement).tagName === "TEXTAREA"
+        (e.target && (e.target as HTMLElement).tagName === 'INPUT') ||
+        (e.target as HTMLElement).tagName === 'TEXTAREA'
       ) {
         return;
       }
 
       // Only handle video shortcuts if no modifier keys are pressed (to avoid blur shortcut conflicts)
       if (!e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) {
-        const video = document.querySelector("video") as HTMLVideoElement;
+        const video = document.querySelector('video') as HTMLVideoElement;
 
         switch (e.code) {
-          case "Space":
+          case 'Space':
             e.preventDefault();
             if (video) {
               if (video.paused) {
@@ -61,15 +71,15 @@ export const useKeyboardShortcuts = () => {
               }
             }
             break;
-          case "ArrowLeft":
+          case 'ArrowLeft':
             e.preventDefault();
             playPrevious();
             break;
-          case "ArrowRight":
+          case 'ArrowRight':
             e.preventDefault();
             playNext();
             break;
-          case "KeyF":
+          case 'KeyF':
             e.preventDefault();
             if (video && video.requestFullscreen) {
               video.requestFullscreen();
@@ -79,9 +89,9 @@ export const useKeyboardShortcuts = () => {
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [playNext, playPrevious]);
 };

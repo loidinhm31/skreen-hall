@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 interface TitleState {
   originalTitle: string;
@@ -8,15 +8,15 @@ interface TitleState {
 }
 
 const TITLE_STORAGE_KEYS = {
-  TITLE_ENABLED: "titleChanger_enabled",
-  ORIGINAL_TITLE: "titleChanger_originalTitle",
-  CUSTOM_TITLE: "titleChanger_customTitle",
+  TITLE_ENABLED: 'titleChanger_enabled',
+  ORIGINAL_TITLE: 'titleChanger_originalTitle',
+  CUSTOM_TITLE: 'titleChanger_customTitle',
 };
 
 const TitleChanger: React.FC = () => {
   const [titleState, setTitleState] = useState<TitleState>({
     originalTitle: document.title,
-    customTitle: "",
+    customTitle: '',
     titleEditMode: false,
     isEnabled: true,
   });
@@ -29,17 +29,24 @@ const TitleChanger: React.FC = () => {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.sync) {
+        if (
+          typeof chrome !== 'undefined' &&
+          chrome.storage &&
+          chrome.storage.sync
+        ) {
           const result = await chrome.storage.sync.get([
             TITLE_STORAGE_KEYS.TITLE_ENABLED,
             TITLE_STORAGE_KEYS.ORIGINAL_TITLE,
             TITLE_STORAGE_KEYS.CUSTOM_TITLE,
           ]);
 
-          const originalTitle = result[TITLE_STORAGE_KEYS.ORIGINAL_TITLE] || document.title;
-          const customTitle = result[TITLE_STORAGE_KEYS.CUSTOM_TITLE] || "";
+          const originalTitle =
+            result[TITLE_STORAGE_KEYS.ORIGINAL_TITLE] || document.title;
+          const customTitle = result[TITLE_STORAGE_KEYS.CUSTOM_TITLE] || '';
           const isEnabled =
-            result[TITLE_STORAGE_KEYS.TITLE_ENABLED] !== undefined ? result[TITLE_STORAGE_KEYS.TITLE_ENABLED] : true;
+            result[TITLE_STORAGE_KEYS.TITLE_ENABLED] !== undefined
+              ? result[TITLE_STORAGE_KEYS.TITLE_ENABLED]
+              : true;
 
           setTitleState((prev) => ({
             ...prev,
@@ -54,7 +61,7 @@ const TitleChanger: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error("Failed to load title settings:", error);
+        console.error('Failed to load title settings:', error);
       } finally {
         setIsLoading(false);
       }
@@ -64,31 +71,44 @@ const TitleChanger: React.FC = () => {
   }, []);
 
   // Save settings to Chrome storage
-  const saveSettings = useCallback(async (isEnabled: boolean, originalTitle?: string, customTitle?: string) => {
-    try {
-      if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.sync) {
-        const dataToSave: { [key: string]: any } = {
-          [TITLE_STORAGE_KEYS.TITLE_ENABLED]: isEnabled,
-        };
+  const saveSettings = useCallback(
+    async (
+      isEnabled: boolean,
+      originalTitle?: string,
+      customTitle?: string
+    ) => {
+      try {
+        if (
+          typeof chrome !== 'undefined' &&
+          chrome.storage &&
+          chrome.storage.sync
+        ) {
+          const dataToSave: { [key: string]: any } = {
+            [TITLE_STORAGE_KEYS.TITLE_ENABLED]: isEnabled,
+          };
 
-        if (originalTitle !== undefined) {
-          dataToSave[TITLE_STORAGE_KEYS.ORIGINAL_TITLE] = originalTitle;
+          if (originalTitle !== undefined) {
+            dataToSave[TITLE_STORAGE_KEYS.ORIGINAL_TITLE] = originalTitle;
+          }
+
+          if (customTitle !== undefined) {
+            dataToSave[TITLE_STORAGE_KEYS.CUSTOM_TITLE] = customTitle;
+          }
+
+          await chrome.storage.sync.set(dataToSave);
         }
-
-        if (customTitle !== undefined) {
-          dataToSave[TITLE_STORAGE_KEYS.CUSTOM_TITLE] = customTitle;
-        }
-
-        await chrome.storage.sync.set(dataToSave);
+      } catch (error) {
+        console.error('Failed to save title settings:', error);
       }
-    } catch (error) {
-      console.error("Failed to save title settings:", error);
-    }
-  }, []);
+    },
+    []
+  );
 
   // Listen for storage changes from other tabs
   useEffect(() => {
-    const handleStorageChange = (changes: { [key: string]: chrome.storage.StorageChange }) => {
+    const handleStorageChange = (changes: {
+      [key: string]: chrome.storage.StorageChange;
+    }) => {
       let shouldUpdate = false;
       const updates: Partial<TitleState> = {};
 
@@ -103,7 +123,9 @@ const TitleChanger: React.FC = () => {
           document.title = newTitle;
         } else if (!newTitle) {
           // Restore original title if custom title is cleared
-          const originalTitle = changes[TITLE_STORAGE_KEYS.ORIGINAL_TITLE]?.newValue || titleState.originalTitle;
+          const originalTitle =
+            changes[TITLE_STORAGE_KEYS.ORIGINAL_TITLE]?.newValue ||
+            titleState.originalTitle;
           document.title = originalTitle;
         }
         shouldUpdate = true;
@@ -114,7 +136,11 @@ const TitleChanger: React.FC = () => {
       }
     };
 
-    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.onChanged) {
+    if (
+      typeof chrome !== 'undefined' &&
+      chrome.storage &&
+      chrome.storage.onChanged
+    ) {
       chrome.storage.onChanged.addListener(handleStorageChange);
       return () => {
         chrome.storage.onChanged.removeListener(handleStorageChange);
@@ -178,7 +204,7 @@ const TitleChanger: React.FC = () => {
         }
       });
     },
-    [saveSettings],
+    [saveSettings]
   );
 
   const restoreOriginalTitle = useCallback(() => {
@@ -187,40 +213,47 @@ const TitleChanger: React.FC = () => {
     setTitleState((prev) => {
       if (prev.originalTitle) {
         document.title = prev.originalTitle;
-        saveSettings(prev.isEnabled, prev.originalTitle, "");
+        saveSettings(prev.isEnabled, prev.originalTitle, '');
 
         // Show visual feedback
         setShowTitleChange(true);
         setTimeout(() => setShowTitleChange(false), 1500);
 
-        return { ...prev, customTitle: "" };
+        return { ...prev, customTitle: '' };
       }
       return prev;
     });
   }, [saveSettings, titleState.isEnabled]);
 
-  const handleTitleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitleState((prev) => ({ ...prev, customTitle: e.target.value }));
-  }, []);
+  const handleTitleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setTitleState((prev) => ({ ...prev, customTitle: e.target.value }));
+    },
+    []
+  );
 
   const handleTitleInputKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
+      if (e.key === 'Enter') {
         e.preventDefault();
         exitTitleEditMode(true);
-      } else if (e.key === "Escape") {
+      } else if (e.key === 'Escape') {
         e.preventDefault();
         exitTitleEditMode(false);
       }
     },
-    [exitTitleEditMode],
+    [exitTitleEditMode]
   );
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       // Prevent if user is typing in an input (except our title input)
       const target = e.target as HTMLElement;
-      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA") && target !== titleInputRef.current) {
+      if (
+        target &&
+        (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') &&
+        target !== titleInputRef.current
+      ) {
         return;
       }
 
@@ -230,30 +263,35 @@ const TitleChanger: React.FC = () => {
       }
 
       // Toggle title changer with Ctrl+Shift+F
-      if (e.ctrlKey && e.shiftKey && e.code === "KeyF") {
+      if (e.ctrlKey && e.shiftKey && e.code === 'KeyF') {
         e.preventDefault();
         toggleTitleChanger();
       }
 
       // Edit title with Ctrl+Alt+T (only if enabled)
-      if (e.ctrlKey && e.altKey && e.code === "KeyT") {
+      if (e.ctrlKey && e.altKey && e.code === 'KeyT') {
         e.preventDefault();
         enterTitleEditMode();
       }
 
       // Restore original title with Ctrl+Alt+R (only if enabled)
-      if (e.ctrlKey && e.altKey && e.code === "KeyR") {
+      if (e.ctrlKey && e.altKey && e.code === 'KeyR') {
         e.preventDefault();
         restoreOriginalTitle();
       }
     },
-    [titleState.titleEditMode, toggleTitleChanger, enterTitleEditMode, restoreOriginalTitle],
+    [
+      titleState.titleEditMode,
+      toggleTitleChanger,
+      enterTitleEditMode,
+      restoreOriginalTitle,
+    ]
   );
 
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [handleKeyDown]);
 
@@ -268,56 +306,64 @@ const TitleChanger: React.FC = () => {
       {titleState.titleEditMode && titleState.isEnabled && (
         <div
           style={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            background: "rgba(0, 0, 0, 0.95)",
-            color: "white",
-            padding: "25px 30px",
-            borderRadius: "12px",
-            fontSize: "16px",
-            fontFamily: "Arial, sans-serif",
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: 'rgba(0, 0, 0, 0.95)',
+            color: 'white',
+            padding: '25px 30px',
+            borderRadius: '12px',
+            fontSize: '16px',
+            fontFamily: 'Arial, sans-serif',
             zIndex: 1000002,
-            backdropFilter: "blur(15px)",
-            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)",
-            minWidth: "400px",
-            pointerEvents: "auto",
+            backdropFilter: 'blur(15px)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+            minWidth: '400px',
+            pointerEvents: 'auto',
           }}
         >
-          <div style={{ marginBottom: "15px", fontSize: "18px", fontWeight: "bold" }}>Edit Tab Title</div>
+          <div
+            style={{
+              marginBottom: '15px',
+              fontSize: '18px',
+              fontWeight: 'bold',
+            }}
+          >
+            Edit Tab Title
+          </div>
           <input
             ref={titleInputRef}
-            type="text"
+            type='text'
             value={titleState.customTitle}
             onChange={handleTitleInputChange}
             onKeyDown={handleTitleInputKeyDown}
-            placeholder="Enter new tab title..."
+            placeholder='Enter new tab title...'
             style={{
-              width: "100%",
-              padding: "12px",
-              fontSize: "16px",
-              border: "2px solid #333",
-              borderRadius: "6px",
-              background: "rgba(255, 255, 255, 0.1)",
-              color: "white",
-              outline: "none",
+              width: '100%',
+              padding: '12px',
+              fontSize: '16px',
+              border: '2px solid #333',
+              borderRadius: '6px',
+              background: 'rgba(255, 255, 255, 0.1)',
+              color: 'white',
+              outline: 'none',
             }}
           />
-          <div style={{ marginTop: "15px", fontSize: "14px", opacity: 0.8 }}>
+          <div style={{ marginTop: '15px', fontSize: '14px', opacity: 0.8 }}>
             Press <strong>Enter</strong> to save, <strong>Esc</strong> to cancel
           </div>
-          <div style={{ marginTop: "10px", display: "flex", gap: "10px" }}>
+          <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
             <button
               onClick={() => exitTitleEditMode(true)}
               style={{
-                padding: "8px 16px",
-                background: "#4CAF50",
-                border: "none",
-                borderRadius: "4px",
-                color: "white",
-                cursor: "pointer",
-                fontSize: "14px",
+                padding: '8px 16px',
+                background: '#4CAF50',
+                border: 'none',
+                borderRadius: '4px',
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: '14px',
               }}
             >
               Save
@@ -325,13 +371,13 @@ const TitleChanger: React.FC = () => {
             <button
               onClick={() => exitTitleEditMode(false)}
               style={{
-                padding: "8px 16px",
-                background: "#666",
-                border: "none",
-                borderRadius: "4px",
-                color: "white",
-                cursor: "pointer",
-                fontSize: "14px",
+                padding: '8px 16px',
+                background: '#666',
+                border: 'none',
+                borderRadius: '4px',
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: '14px',
               }}
             >
               Cancel
@@ -344,31 +390,31 @@ const TitleChanger: React.FC = () => {
       {showTitleChange && (
         <div
           style={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            background: "rgba(0, 0, 0, 0.9)",
-            color: "white",
-            padding: "20px 30px",
-            borderRadius: "12px",
-            fontSize: "24px",
-            fontFamily: "Arial, sans-serif",
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: 'rgba(0, 0, 0, 0.9)',
+            color: 'white',
+            padding: '20px 30px',
+            borderRadius: '12px',
+            fontSize: '24px',
+            fontFamily: 'Arial, sans-serif',
             zIndex: 1000002,
-            backdropFilter: "blur(15px)",
-            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
-            textAlign: "center",
-            animation: "titleFadeInOut 1.5s ease-in-out",
+            backdropFilter: 'blur(15px)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+            textAlign: 'center',
+            animation: 'titleFadeInOut 1.5s ease-in-out',
           }}
         >
-          <div>Tab Title {titleState.customTitle ? "Changed" : "Restored"}</div>
+          <div>Tab Title {titleState.customTitle ? 'Changed' : 'Restored'}</div>
           <div
             style={{
-              fontSize: "18px",
-              fontWeight: "bold",
-              color: "#FF9800",
-              maxWidth: "300px",
-              wordBreak: "break-word",
+              fontSize: '18px',
+              fontWeight: 'bold',
+              color: '#FF9800',
+              maxWidth: '300px',
+              wordBreak: 'break-word',
             }}
           >
             {document.title}

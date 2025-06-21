@@ -1,7 +1,8 @@
 {
   "name": "skeren-hall-extension",
+  "displayName": "Skeren Hall - Control Screen",
   "version": "1.1.0",
-  "description": "Chrome extension for screen control",
+  "description": "Privacy protection for your screen",
   "scripts": {
     "build": "webpack --mode=production",
     "dev": "webpack --mode=development --watch",
@@ -9,20 +10,35 @@
     "fix:format": "prettier --write ./src"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.246",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
+    "@commitlint/cli": "^19.2.1",
+    "@commitlint/config-conventional": "^19.1.0",
+    "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
+    "@thedutchcoder/postcss-rem-to-px": "^0.0.2",
+    "@types/chrome": "^0.0.268",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.5",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "autoprefixer": "^10.4.19",
+    "husky": "^9.0.11",
+    "prettier": "^3.2.5",
+    "prettier-plugin-css-order": "^2.1.2",
+    "prettier-plugin-tailwindcss": "^0.5.13",
+    "typescript": "^5.8.3",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.8.1",
     "style-loader": "^3.3.3",
     "ts-loader": "^9.4.4",
-    "typescript": "^5.1.6",
     "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4",
-    "prettier": "3.5.3"
+    "webpack-cli": "^5.1.4"
+  },
+  "packageManager": "pnpm@8.15.0",
+  "engines": {
+    "node": ">=20.x",
+    "pnpm": ">=8.15.0"
   }
 }

@@ -30,12 +30,20 @@ export interface VideoPlayerSettings {
   volume: number;
   playbackRate: number;
   subtitlesEnabled: boolean;
-  qualityPreference: "auto" | "high" | "medium" | "low";
+  qualityPreference: 'auto' | 'high' | 'medium' | 'low';
   skipIntroEnabled: boolean;
   rememberPosition: boolean;
 }
 
-export type VideoFormat = "mp4" | "webm" | "ogg" | "mov" | "avi" | "mkv" | "m4v" | "3gp";
+export type VideoFormat =
+  | 'mp4'
+  | 'webm'
+  | 'ogg'
+  | 'mov'
+  | 'avi'
+  | 'mkv'
+  | 'm4v'
+  | '3gp';
 
 export interface VideoMetadata {
   title?: string;
@@ -72,11 +80,11 @@ export interface FileSystemDirectoryHandle {
 
 export interface FileSystemFileHandle {
   getFile(): Promise<File>;
-  kind: "file";
+  kind: 'file';
 }
 
 export interface FileSystemHandle {
-  kind: "file" | "directory";
+  kind: 'file' | 'directory';
   name: string;
 }
 
@@ -142,10 +150,10 @@ export interface VideoControlsProps {
 
 // Storage keys for video player settings
 export const VIDEO_PLAYER_STORAGE_KEYS = {
-  SETTINGS: "videoPlayer_settings",
-  RECENT_FILES: "videoPlayer_recentFiles",
-  BOOKMARKS: "videoPlayer_bookmarks",
-  PLAYBACK_HISTORY: "videoPlayer_playbackHistory",
+  SETTINGS: 'videoPlayer_settings',
+  RECENT_FILES: 'videoPlayer_recentFiles',
+  BOOKMARKS: 'videoPlayer_bookmarks',
+  PLAYBACK_HISTORY: 'videoPlayer_playbackHistory',
 } as const;
 
 export interface VideoFile {

@@ -1,4 +1,4 @@
-import { BLUR_STORAGE_KEYS, FakeAppType, TITLE_STORAGE_KEYS } from "../types";
+import { BLUR_STORAGE_KEYS, FakeAppType, TITLE_STORAGE_KEYS } from '../types';
 
 interface PopupState {
   blurEnabled: boolean;
@@ -14,9 +14,9 @@ class PopupController {
     blurEnabled: true,
     clearRadius: 100,
     blurIntensity: 8,
-    fakeAppType: "none",
+    fakeAppType: 'none',
     titleEnabled: true,
-    customTitle: "",
+    customTitle: '',
   };
 
   private elements: {
@@ -46,14 +46,18 @@ class PopupController {
   }
 
   private initializeElements(): void {
-    this.elements.blurStatus = document.getElementById("blur-status");
-    this.elements.clearSize = document.getElementById("clear-size");
-    this.elements.blurIntensity = document.getElementById("blur-intensity");
-    this.elements.fakeApp = document.getElementById("fake-app");
-    this.elements.titleStatus = document.getElementById("title-status");
-    this.elements.customTitleStatus = document.getElementById("custom-title-status");
-    this.elements.toggleButton = document.getElementById("toggle-blur");
-    this.elements.videoPlayerButton = document.getElementById("video-player-button");
+    this.elements.blurStatus = document.getElementById('blur-status');
+    this.elements.clearSize = document.getElementById('clear-size');
+    this.elements.blurIntensity = document.getElementById('blur-intensity');
+    this.elements.fakeApp = document.getElementById('fake-app');
+    this.elements.titleStatus = document.getElementById('title-status');
+    this.elements.customTitleStatus = document.getElementById(
+      'custom-title-status'
+    );
+    this.elements.toggleButton = document.getElementById('toggle-blur');
+    this.elements.videoPlayerButton = document.getElementById(
+      'video-player-button'
+    );
   }
 
   private async loadSettings(): Promise<void> {
@@ -69,30 +73,34 @@ class PopupController {
 
       this.state = {
         blurEnabled:
-          result[BLUR_STORAGE_KEYS.BLUR_ENABLED] !== undefined ? result[BLUR_STORAGE_KEYS.BLUR_ENABLED] : true,
+          result[BLUR_STORAGE_KEYS.BLUR_ENABLED] !== undefined
+            ? result[BLUR_STORAGE_KEYS.BLUR_ENABLED]
+            : true,
         clearRadius: result[BLUR_STORAGE_KEYS.CLEAR_RADIUS] || 100,
         blurIntensity: result[BLUR_STORAGE_KEYS.BLUR_INTENSITY] || 8,
-        fakeAppType: result[BLUR_STORAGE_KEYS.FAKE_APP_TYPE] || "none",
+        fakeAppType: result[BLUR_STORAGE_KEYS.FAKE_APP_TYPE] || 'none',
         titleEnabled:
-          result[TITLE_STORAGE_KEYS.TITLE_ENABLED] !== undefined ? result[TITLE_STORAGE_KEYS.TITLE_ENABLED] : true,
-        customTitle: result[TITLE_STORAGE_KEYS.CUSTOM_TITLE] || "",
+          result[TITLE_STORAGE_KEYS.TITLE_ENABLED] !== undefined
+            ? result[TITLE_STORAGE_KEYS.TITLE_ENABLED]
+            : true,
+        customTitle: result[TITLE_STORAGE_KEYS.CUSTOM_TITLE] || '',
       };
 
       this.updateUI();
     } catch (error) {
-      console.error("Failed to load settings:", error);
+      console.error('Failed to load settings:', error);
       this.updateUI();
     }
   }
 
   private setupEventListeners(): void {
     // Toggle blur button
-    this.elements.toggleButton?.addEventListener("click", () => {
+    this.elements.toggleButton?.addEventListener('click', () => {
       this.toggleBlur();
     });
 
     // Video player button
-    this.elements.videoPlayerButton?.addEventListener("click", () => {
+    this.elements.videoPlayerButton?.addEventListener('click', () => {
       this.openVideoPlayer();
     });
 
@@ -101,27 +109,33 @@ class PopupController {
       let shouldUpdate = false;
 
       if (changes[BLUR_STORAGE_KEYS.BLUR_ENABLED]) {
-        this.state.blurEnabled = changes[BLUR_STORAGE_KEYS.BLUR_ENABLED].newValue;
+        this.state.blurEnabled =
+          changes[BLUR_STORAGE_KEYS.BLUR_ENABLED].newValue;
         shouldUpdate = true;
       }
       if (changes[BLUR_STORAGE_KEYS.CLEAR_RADIUS]) {
-        this.state.clearRadius = changes[BLUR_STORAGE_KEYS.CLEAR_RADIUS].newValue;
+        this.state.clearRadius =
+          changes[BLUR_STORAGE_KEYS.CLEAR_RADIUS].newValue;
         shouldUpdate = true;
       }
       if (changes[BLUR_STORAGE_KEYS.BLUR_INTENSITY]) {
-        this.state.blurIntensity = changes[BLUR_STORAGE_KEYS.BLUR_INTENSITY].newValue;
+        this.state.blurIntensity =
+          changes[BLUR_STORAGE_KEYS.BLUR_INTENSITY].newValue;
         shouldUpdate = true;
       }
       if (changes[BLUR_STORAGE_KEYS.FAKE_APP_TYPE]) {
-        this.state.fakeAppType = changes[BLUR_STORAGE_KEYS.FAKE_APP_TYPE].newValue;
+        this.state.fakeAppType =
+          changes[BLUR_STORAGE_KEYS.FAKE_APP_TYPE].newValue;
         shouldUpdate = true;
       }
       if (changes[TITLE_STORAGE_KEYS.TITLE_ENABLED]) {
-        this.state.titleEnabled = changes[TITLE_STORAGE_KEYS.TITLE_ENABLED].newValue;
+        this.state.titleEnabled =
+          changes[TITLE_STORAGE_KEYS.TITLE_ENABLED].newValue;
         shouldUpdate = true;
       }
       if (changes[TITLE_STORAGE_KEYS.CUSTOM_TITLE]) {
-        this.state.customTitle = changes[TITLE_STORAGE_KEYS.CUSTOM_TITLE].newValue;
+        this.state.customTitle =
+          changes[TITLE_STORAGE_KEYS.CUSTOM_TITLE].newValue;
         shouldUpdate = true;
       }
 
@@ -140,14 +154,14 @@ class PopupController {
       this.state.blurEnabled = newState;
       this.updateUI();
     } catch (error) {
-      console.error("Failed to toggle blur:", error);
+      console.error('Failed to toggle blur:', error);
     }
   }
 
   private async openVideoPlayer(): Promise<void> {
     try {
       // Create the video player page URL
-      const videoPlayerUrl = chrome.runtime.getURL("video-player.html");
+      const videoPlayerUrl = chrome.runtime.getURL('video-player.html');
 
       // Open in a new tab
       await chrome.tabs.create({
@@ -158,48 +172,56 @@ class PopupController {
       // Close the popup
       window.close();
     } catch (error) {
-      console.error("Failed to open video player:", error);
+      console.error('Failed to open video player:', error);
 
       // Fallback: try to open as popup window
       try {
-        const videoPlayerUrl = chrome.runtime.getURL("video-player.html");
-        window.open(videoPlayerUrl, "videoPlayer", "width=1200,height=800,scrollbars=yes,resizable=yes");
+        const videoPlayerUrl = chrome.runtime.getURL('video-player.html');
+        window.open(
+          videoPlayerUrl,
+          'videoPlayer',
+          'width=1200,height=800,scrollbars=yes,resizable=yes'
+        );
         window.close();
       } catch (fallbackError) {
-        console.error("Fallback failed:", fallbackError);
-        alert("Unable to open video player. Please check permissions.");
+        console.error('Fallback failed:', fallbackError);
+        alert('Unable to open video player. Please check permissions.');
       }
     }
   }
 
   private getFakeAppName(type: FakeAppType): string {
     switch (type) {
-      case "none":
-        return "None";
-      case "code":
-        return "VS Code";
-      case "terminal":
-        return "Terminal";
-      case "spreadsheet":
-        return "Excel";
-      case "email":
-        return "Outlook";
-      case "document":
-        return "Word";
-      case "meeting":
-        return "Teams";
-      case "monitoring":
-        return "Monitor";
+      case 'none':
+        return 'None';
+      case 'code':
+        return 'VS Code';
+      case 'terminal':
+        return 'Terminal';
+      case 'spreadsheet':
+        return 'Excel';
+      case 'email':
+        return 'Outlook';
+      case 'document':
+        return 'Word';
+      case 'meeting':
+        return 'Teams';
+      case 'monitoring':
+        return 'Monitor';
       default:
-        return "None";
+        return 'None';
     }
   }
 
   private updateUI(): void {
     // Update status indicators
     if (this.elements.blurStatus) {
-      this.elements.blurStatus.textContent = this.state.blurEnabled ? "ON" : "OFF";
-      this.elements.blurStatus.style.color = this.state.blurEnabled ? "#4CAF50" : "#FF5722";
+      this.elements.blurStatus.textContent = this.state.blurEnabled
+        ? 'ON'
+        : 'OFF';
+      this.elements.blurStatus.style.color = this.state.blurEnabled
+        ? '#4CAF50'
+        : '#FF5722';
     }
 
     if (this.elements.clearSize) {
@@ -211,38 +233,47 @@ class PopupController {
     }
 
     if (this.elements.fakeApp) {
-      this.elements.fakeApp.textContent = this.getFakeAppName(this.state.fakeAppType);
+      this.elements.fakeApp.textContent = this.getFakeAppName(
+        this.state.fakeAppType
+      );
     }
 
     if (this.elements.titleStatus) {
-      this.elements.titleStatus.textContent = this.state.titleEnabled ? "ON" : "OFF";
-      this.elements.titleStatus.style.color = this.state.titleEnabled ? "#4CAF50" : "#FF5722";
+      this.elements.titleStatus.textContent = this.state.titleEnabled
+        ? 'ON'
+        : 'OFF';
+      this.elements.titleStatus.style.color = this.state.titleEnabled
+        ? '#4CAF50'
+        : '#FF5722';
     }
 
     if (this.elements.customTitleStatus) {
-      const hasCustomTitle = this.state.customTitle && this.state.customTitle.trim() !== "";
+      const hasCustomTitle =
+        this.state.customTitle && this.state.customTitle.trim() !== '';
       if (hasCustomTitle && this.state.titleEnabled) {
-        this.elements.customTitleStatus.textContent = "Active";
-        this.elements.customTitleStatus.style.color = "#FF9800";
+        this.elements.customTitleStatus.textContent = 'Active';
+        this.elements.customTitleStatus.style.color = '#FF9800';
       } else {
-        this.elements.customTitleStatus.textContent = "None";
-        this.elements.customTitleStatus.style.color = "#888";
+        this.elements.customTitleStatus.textContent = 'None';
+        this.elements.customTitleStatus.style.color = '#888';
       }
     }
 
     // Update toggle button
     if (this.elements.toggleButton) {
-      this.elements.toggleButton.textContent = this.state.blurEnabled ? "Disable Blur" : "Enable Blur";
+      this.elements.toggleButton.textContent = this.state.blurEnabled
+        ? 'Disable Blur'
+        : 'Enable Blur';
       if (this.state.blurEnabled) {
-        this.elements.toggleButton.classList.add("active");
+        this.elements.toggleButton.classList.add('active');
       } else {
-        this.elements.toggleButton.classList.remove("active");
+        this.elements.toggleButton.classList.remove('active');
       }
     }
   }
 }
 
 // Initialize when DOM is ready
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   new PopupController();
 });
