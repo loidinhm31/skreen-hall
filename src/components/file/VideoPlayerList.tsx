@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, Suspense, lazy } from 'react';
 import { DrivePathSaveManager, SaveSettings } from '../../utils/DrivePathSaveManager';
 import SimpleFileRename from './FileRenameManager';
-import SaveSettingsPanel from './SaveSettingsPanel';
 import { useVideoPlayer } from '../../hook/useVideoPlayer';
+
+// Lazy load the heavy SaveSettingsPanel
+const SaveSettingsPanel = lazy(() => import('./SaveSettingsPanel'));
 
 const VideoPlaylist: React.FC = () => {
   const {
@@ -399,12 +401,31 @@ const VideoPlaylist: React.FC = () => {
           : 'default location'}
       </div>
 
-      {/* Save Settings Panel */}
-      <SaveSettingsPanel
-        isOpen={showSettings}
-        onClose={() => setShowSettings(false)}
-        onSettingsChange={handleSettingsChange}
-      />
+      {/* Lazy Load Save Settings Panel */}
+      {showSettings && (
+        <Suspense
+          fallback={
+            <div style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              color: 'white',
+              background: 'rgba(0,0,0,0.8)',
+              padding: '20px',
+              borderRadius: '8px'
+            }}>
+              Loading settings...
+            </div>
+          }
+        >
+          <SaveSettingsPanel
+            isOpen={showSettings}
+            onClose={() => setShowSettings(false)}
+            onSettingsChange={handleSettingsChange}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };

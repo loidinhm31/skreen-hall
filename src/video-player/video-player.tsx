@@ -1,15 +1,33 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import BlurOverlay from '../components/BlurOverlay';
 import ErrorDisplay from '../components/file/ErrorDisplay';
 import FileControls from '../components/file/FileControl';
-import ShortcutsInfo from '../components/file/ShortcutInfo';
+import VideoPlayerHeader from '../components/file/VideoPlayerHeader';
+import VideoPlayer from '../components/file/VideoPlayer';
 import { useKeyboardShortcuts } from '../hook/useKeyboardShortcuts';
 import VideoPlayerProvider from './provider/VideoPlayerProvider';
-import VideoPlayerHeader from '../components/file/VideoPlayerHeader';
-import VideoPlaylist from '../components/file/VideoPlayerList';
-import VideoPlayer from '../components/file/VideoPlayer';
+
+// Lazy load heavy components
+const BlurOverlay = lazy(() => import('../components/BlurOverlay'));
+const VideoPlaylist = lazy(() => import('../components/file/VideoPlayerList'));
+const ShortcutsInfo = lazy(() => import('../components/file/ShortcutInfo'));
+
+// Loading fallback component
+const ComponentLoader: React.FC<{ name: string }> = ({ name }) => (
+  <div
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '10px',
+      color: 'rgba(255, 255, 255, 0.7)',
+      fontSize: '12px',
+    }}
+  >
+    Loading {name}...
+  </div>
+);
 
 const KeyboardShortcutsHandler: React.FC = () => {
   useKeyboardShortcuts();
@@ -44,11 +62,22 @@ const VideoPlayerApp: React.FC = () => {
           }}
         >
           <VideoPlayer />
-          <VideoPlaylist />
+
+          {/* Lazy load the playlist */}
+          <Suspense fallback={<ComponentLoader name="playlist" />}>
+            <VideoPlaylist />
+          </Suspense>
         </div>
 
-        <ShortcutsInfo />
-        <BlurOverlay />
+        {/* Lazy load shortcuts info */}
+        <Suspense fallback={null}>
+          <ShortcutsInfo />
+        </Suspense>
+
+        {/* Lazy load blur overlay */}
+        <Suspense fallback={null}>
+          <BlurOverlay />
+        </Suspense>
       </div>
     </VideoPlayerProvider>
   );

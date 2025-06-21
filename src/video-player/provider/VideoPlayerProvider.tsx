@@ -31,6 +31,8 @@ const VideoPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   const [error, setError] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
+  console.log('VideoPlayerProvider rendered, isInitialized:', isInitialized);
+
   // Load settings from Chrome storage on mount
   useEffect(() => {
     const loadSettings = async () => {

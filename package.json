@@ -2,6 +2,7 @@
   "name": "skeren-hall-extension",
   "displayName": "Skeren Hall - Control Screen",
   "version": "1.1.0",
+  "sideEffects": ["*.css", "./src/content/content.css"],
   "description": "Privacy protection for your screen",
   "scripts": {
     "build": "webpack --mode=production",
@@ -24,17 +25,27 @@
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "autoprefixer": "^10.4.19",
+    "compression-webpack-plugin": "^11.1.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.8.1",
     "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
     "prettier-plugin-css-order": "^2.1.2",
     "prettier-plugin-tailwindcss": "^0.5.13",
-    "typescript": "^5.8.3",
-    "copy-webpack-plugin": "^11.0.0",
-    "css-loader": "^6.8.1",
     "style-loader": "^3.3.3",
     "ts-loader": "^9.4.4",
+    "typescript": "^5.8.3",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ],
+    "**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
   },
   "packageManager": "pnpm@8.15.0",
   "engines": {
